@@ -3,69 +3,63 @@ import { CreateTodoDto } from './dto/create-todo.dto';
 import { UpdateTodoDto } from './dto/update-todo.dto';
 import { DatabaseService } from 'src/database/database.service';
 import { Prisma } from '@prisma/client';
-import { UserEmail } from 'src/common/decorators/user-email.decorator';
 
 @Injectable()
 export class TodoService {
-  constructor(private readonly databaseService: DatabaseService) { }
+  constructor(private readonly databaseService: DatabaseService) {}
 
-  async create(createTodoDto: CreateTodoDto, @UserEmail() userEmail: string) {
+  async create(createTodoDto: CreateTodoDto, email: string) {
     try {
-      const user = await this.databaseService.user.findUnique({ where: { email: userEmail } });
+      const user = await this.databaseService.user.findUnique({
+        where: { email },
+      });
       if (!user) {
-        throw new Error("User not found.");
+        throw new Error('User not found');
       }
-      let data: Prisma.TodoCreateInput = {
+      const data: Prisma.TodoCreateInput = {
         description: createTodoDto.description,
         task: createTodoDto.task,
-        status: "ACTIVE",
+        status: 'ACTIVE',
         user: {
-          connect: { email: user.email }
-        }
+          connect: { email: user.email },
+        },
       };
       return await this.databaseService.todo.create({ data });
-    } catch (error) {
-      return error;
+    } catch (err) {
+      return err;
     }
   }
 
-  async findAll(@UserEmail() userEmail: string) {
-    const user = await this.databaseService.user.findUnique({ where: { email: userEmail } });
-    if (!user) {
-      throw new Error("User not found.");
-    }
-    return await this.databaseService.todo.findMany({
+  async findAll(userEmail: string) {
+    return this.databaseService.todo.findMany({
       where: {
-        userEmail
-      }
+        userEmail: userEmail,
+      },
     });
   }
 
-  findOne(id: number, @UserEmail() userEmail: string) {
+  async findOne(id: number) {
     return this.databaseService.todo.findFirst({
       where: {
-        id,
-        userEmail
-      }
-    })
+        id: id,
+      },
+    });
   }
 
-  update(id: number, updateTodoDto: UpdateTodoDto, @UserEmail() userEmail: string) {
+  async update(id: number, updateTodoDto: UpdateTodoDto) {
     return this.databaseService.todo.update({
       where: {
-        id,
-        userEmail
+        id: id,
       },
-      data: updateTodoDto
-    })
+      data: updateTodoDto,
+    });
   }
 
-  remove(id: number, @UserEmail() userEmail: string) {
+  async remove(id: number) {
     return this.databaseService.todo.delete({
       where: {
-        id,
-        userEmail
-      }
-    })
+        id: id,
+      },
+    });
   }
 }

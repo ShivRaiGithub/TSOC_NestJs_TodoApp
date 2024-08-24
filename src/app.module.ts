@@ -8,6 +8,6 @@ import { AppController } from './app.controller';
 @Module({
   imports: [DatabaseModule, TodoModule, AuthModule],
   controllers: [AppController],
-  providers: [AppService]
+  providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {}

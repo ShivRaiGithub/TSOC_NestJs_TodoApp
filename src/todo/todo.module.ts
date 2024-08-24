@@ -8,4 +8,4 @@ import { DatabaseModule } from 'src/database/database.module';
   controllers: [TodoController],
   providers: [TodoService],
 })
-export class TodoModule { }
+export class TodoModule {}

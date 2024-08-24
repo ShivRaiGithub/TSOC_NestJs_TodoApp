@@ -6,10 +6,12 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors();
-  app.useGlobalPipes(new ValidationPipe())
+  app.useGlobalPipes(new ValidationPipe());
   const config = new DocumentBuilder()
-    .setTitle('Todo Rest API')
-    .setDescription("A reast api to list user's todos/tasks, authorization implemented using JWT token. The API is module using Nestjs")
+    .setTitle('Todo REST API')
+    .setDescription(
+      "Welcome to Todo Rest App",
+    )
     .setVersion('1.0')
     .addBearerAuth()
     .build();
